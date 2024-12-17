@@ -1,5 +1,6 @@
 package com.praksa.test.service;
 
+import com.praksa.test.model.SenzorRecord;
 import com.praksa.test.model.User;
 import org.springframework.stereotype.Service;
 
@@ -17,4 +18,8 @@ public interface UserService {
     void deleteRecord(int id);
 
     void addWeather(Map<String, Object> weatherData);
+
+    int addSensorRecord(SenzorRecord request);
+
+    SenzorRecord getLastSensorRecord();
 }

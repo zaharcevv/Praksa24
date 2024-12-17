@@ -1,5 +1,6 @@
 package com.praksa.test.repository;
 
+import com.praksa.test.model.SenzorRecord;
 import com.praksa.test.model.User;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +88,55 @@ public class DbAccessor {
             statement.setString(3, hum);
 
             statement.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int addSensorRecord(String timestamp, String temp, String hum) {
+        String query = "INSERT INTO public.senzor (\"timestamp\", temperature, humidity) VALUES (?, ?, ?);";
+        try(Connection connection = dataSource.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+            statement.setString(1, timestamp);
+            statement.setString(2, temp);
+            statement.setString(3, hum);
+
+            statement.executeUpdate();
+            ResultSet resultSet = statement.getGeneratedKeys();
+            if (resultSet.next()) {
+                return resultSet.getInt("id");
+            }
+            else {
+                return -1;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public SenzorRecord getLastSensorRecord() {
+        String query = "SELECT id, \"timestamp\", temperature, humidity FROM public.senzor ORDER BY ID DESC LIMIT 1;";
+        try(Connection connection = dataSource.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            ResultSet resultSet =    statement.executeQuery();
+            if (resultSet.next()) {
+               SenzorRecord record = new SenzorRecord();
+               int id = resultSet.getInt("id");
+               String timestamp = resultSet.getString("timestamp");
+               String temperature = resultSet.getString("temperature");
+               String humidity = resultSet.getString("humidity");
+
+               record.setId(id);
+               record.setTimestamp(timestamp);
+               record.setTemperature(temperature);
+               record.setHumidity(humidity);
+
+               return record;
+            }
+            else {
+              return new SenzorRecord();
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

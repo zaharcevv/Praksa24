@@ -1,12 +1,16 @@
 package com.praksa.test.controller;
 
+import com.praksa.test.model.SenzorRecord;
 import com.praksa.test.model.User;
 import com.praksa.test.service.UserService;
 import com.praksa.test.service.WeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -61,6 +65,21 @@ public class TestController {
         Map<String, Object> weatherData = weatherService.getWeatherForCity(city);
         service.addWeather(weatherData);
         return ResponseEntity.ok(weatherData);
+    }
+
+    @PostMapping("/senzor")
+    public  ResponseEntity<Void> addSensorRecord(@RequestBody SenzorRecord request) {
+        int result = service.addSensorRecord(request);
+        URI location = UriComponentsBuilder.fromUriString("/senzor/{result}")
+                .buildAndExpand(result)
+                .toUri();
+        return ResponseEntity.created(location).build();
+    }
+
+    @GetMapping("/senzor/last")
+    public ResponseEntity<SenzorRecord> getLastSensorRecord() {
+        SenzorRecord record = service.getLastSensorRecord();
+        return ResponseEntity.ok(record);
     }
 
 }

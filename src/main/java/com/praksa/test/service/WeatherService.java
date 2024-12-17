@@ -1,5 +1,6 @@
 package com.praksa.test.service;
 
+import com.praksa.test.model.SenzorRecord;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 

@@ -1,5 +1,6 @@
 package com.praksa.test.service;
 
+import com.praksa.test.model.SenzorRecord;
 import com.praksa.test.model.User;
 import com.praksa.test.repository.DbAccessor;
 import com.praksa.test.util.DateUtil;
@@ -52,6 +53,19 @@ public class UserServiceImpl implements UserService {
 
         // Pass the extracted values along with the timestamp to dbAccessor
         dbAccessor.addWeather(temp.toString(), humidity.toString(), timestamp);
+    }
+
+    @Override
+    public int addSensorRecord(SenzorRecord request) {
+        String timestamp = DateUtil.getCurrentDateTime();
+        String temp = request.getTemperature();
+        String hum = request.getHumidity();
+        return dbAccessor.addSensorRecord(timestamp, temp, hum);
+    }
+
+    @Override
+    public SenzorRecord getLastSensorRecord() {
+        return dbAccessor.getLastSensorRecord();
     }
 
 }
